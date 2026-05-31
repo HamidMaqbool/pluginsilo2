@@ -6,6 +6,8 @@ import { VersionSelector } from './VersionSelector';
 import { VersionChangeConfirmationModal } from './VersionChangeConfirmationModal';
 import { useCompanyAPIStore } from '../config';
 import { useAppStore } from '../store/appStore';
+import { getSupportUrl } from '../helpers/ajaxHelper';
+import { formatRelativeTime, formatPrice, isFutureDate } from '../helpers/dateHelper';
 
 interface APICardProps {
   api: CompanyAPI;
@@ -113,7 +115,7 @@ export function APICard({ api }: APICardProps) {
           )}
         </div>
         <div className="nx-pricing-badge">
-          {api.price}
+          {formatPrice(api.price)}
         </div>
         {api.hasFreeTrial && (
           <div className="nx-trial-badge">
@@ -121,8 +123,13 @@ export function APICard({ api }: APICardProps) {
           </div>
         )}
         {api.status === APIStatus.ACTIVE && (
-          <div className="nx-status-badge-overlay">
+          <div className="nx-status-badge-overlay" style={{ left: '12px', right: 'auto', zIndex: 12 }}>
             <Icon name="check" size={12} />
+          </div>
+        )}
+        {(api.status === APIStatus.EXPIRED || String(api.status).toUpperCase() === 'EXPIRED') && (
+          <div className="nx-trial-badge" style={{ backgroundColor: 'var(--nx-red-600)', top: 'auto', bottom: '12px', left: '12px' }}>
+            Expired
           </div>
         )}
       </div>
@@ -133,6 +140,24 @@ export function APICard({ api }: APICardProps) {
           <span className="nx-category-tag">{api.category}</span>
         </div>
         <p>{api.description}</p>
+        {api.expire_at && (
+          <div className="nx-expiry-label" style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '6px', 
+            fontSize: '11px', 
+            color: isFutureDate(api.expire_at) ? 'var(--nx-emerald-700)' : 'var(--nx-red-600)', 
+            fontWeight: 600, 
+            marginTop: '8px', 
+            backgroundColor: isFutureDate(api.expire_at) ? 'var(--nx-emerald-50)' : 'var(--nx-red-50)', 
+            padding: '4px 8px', 
+            borderRadius: '6px', 
+            width: 'fit-content' 
+          }}>
+            <Icon name="history" size={12} />
+            <span>Expires {formatRelativeTime(api.expire_at)}</span>
+          </div>
+        )}
       </div>
 
       <div className="nx-card-footer">
@@ -213,6 +238,17 @@ export function APICard({ api }: APICardProps) {
                 </button>
               )}
             </>
+          )}
+
+          {(api.status === APIStatus.EXPIRED || String(api.status).toUpperCase() === 'EXPIRED') && (
+            <button 
+              onClick={() => window.open(getSupportUrl(), '_blank', 'noopener,noreferrer')}
+              className="nx-btn nx-btn-primary"
+              style={{ backgroundColor: 'var(--nx-indigo-600)', color: 'var(--nx-white)', border: 'none' }}
+            >
+              <Icon name="history" size={16} />
+              Contact Support
+            </button>
           )}
         </div>
       </div>

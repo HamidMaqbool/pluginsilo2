@@ -33,8 +33,17 @@ export function getSupportUrl(): string {
 }
 
 export async function ajaxRequest({ data = {}, type = '' }) {
-  // Use direct AJAX URL instead of local backend proxy
-  const url = window.ps_ajax_url || 'https://plugins.jarld.com/wp-json/plugin-silo/v1/ajax';
+  // Use local backend proxy if cross-origin, otherwise use target directly
+  let url = window.ps_ajax_url || 'https://plugins.jarld.com/wp-json/plugin-silo/v1/ajax';
+
+  try {
+    const parsedUrl = new URL(url, window.location.href);
+    if (parsedUrl.origin !== window.location.origin) {
+      url = '/api/ajax';
+    }
+  } catch (e) {
+    // Fallback
+  }
 
   let formData;
   if (data instanceof FormData) {

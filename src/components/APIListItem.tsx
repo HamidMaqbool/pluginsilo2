@@ -6,6 +6,8 @@ import { VersionSelector } from './VersionSelector';
 import { VersionChangeConfirmationModal } from './VersionChangeConfirmationModal';
 import { useCompanyAPIStore } from '../config';
 import { useAppStore } from '../store/appStore';
+import { getSupportUrl } from '../helpers/ajaxHelper';
+import { formatRelativeTime, formatPrice, isFutureDate } from '../helpers/dateHelper';
 
 interface APIListItemProps {
   api: CompanyAPI;
@@ -90,21 +92,71 @@ export function APIListItem({ api }: APIListItemProps) {
         )}
       </div>
 
-      <div className="nx-list-content">
-        <div className="nx-list-title-row">
-          <h3>{api.name}</h3>
-          <div className="nx-tags-list">
-            {api.tags?.map(tag => (
-              <span key={tag} className="nx-tag-micro">{tag}</span>
-            ))}
+      <div className="nx-list-content" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div className="nx-list-title-row" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: 'var(--nx-slate-900)' }}>{api.name}</h3>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+            <span className="nx-category-tag" style={{ margin: 0 }}>{api.category}</span>
+            <span className="nx-category-tag" style={{ backgroundColor: 'var(--nx-indigo-50)', color: 'var(--nx-indigo-600)', borderColor: 'var(--nx-indigo-100)', margin: 0 }}>
+              {formatPrice(api.price)}
+            </span>
+            {api.hasFreeTrial && (
+              <span className="nx-category-tag" style={{ backgroundColor: 'var(--nx-emerald-50)', color: 'var(--nx-emerald-700)', borderColor: 'var(--nx-emerald-100)', margin: 0 }}>
+                Free Trial
+              </span>
+            )}
+            {(api.status === APIStatus.EXPIRED || String(api.status).toUpperCase() === 'EXPIRED') && (
+              <span className="nx-category-tag" style={{ backgroundColor: 'var(--nx-red-50)', color: 'var(--nx-red-700)', borderColor: 'var(--nx-red-100)', fontWeight: 'bold', margin: 0 }}>
+                Expired
+              </span>
+            )}
           </div>
-          <span className="nx-category-tag">{api.category}</span>
-          <span className="nx-category-tag" style={{ backgroundColor: 'var(--nx-indigo-50)', color: 'var(--nx-indigo-600)' }}>{api.price}</span>
-          {api.hasFreeTrial && (
-            <span className="nx-category-tag" style={{ backgroundColor: 'var(--nx-emerald-50)', color: 'var(--nx-emerald-700)' }}>Free Trial</span>
+        </div>
+
+        <p className="nx-list-description" style={{ 
+          margin: '2px 0 6px 0', 
+          fontSize: '14px', 
+          lineHeight: '1.5',
+          color: 'var(--nx-slate-500)',
+          whiteSpace: 'normal',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis'
+        }}>
+          {api.description}
+        </p>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          {api.tags && api.tags.length > 0 && (
+            <div className="nx-tags-list" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              {api.tags.map(tag => (
+                <span key={tag} className="nx-tag-micro" style={{ backgroundColor: 'var(--nx-slate-50)', color: 'var(--nx-slate-500)', border: '1px solid var(--nx-slate-100)' }}>
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {api.expire_at && (
+            <span className="nx-category-tag" style={{ 
+              backgroundColor: isFutureDate(api.expire_at) ? 'var(--nx-emerald-50)' : 'var(--nx-red-50)', 
+              color: isFutureDate(api.expire_at) ? 'var(--nx-emerald-700)' : 'var(--nx-red-700)', 
+              border: isFutureDate(api.expire_at) ? '1px solid var(--nx-emerald-100)' : '1px solid var(--nx-red-100)', 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '4px',
+              padding: '4px 8px',
+              fontSize: '10px',
+              margin: 0
+            }}>
+              <Icon name="history" size={11} />
+              Expires {formatRelativeTime(api.expire_at)}
+            </span>
           )}
         </div>
-        <p className="nx-list-description">{api.description}</p>
       </div>
 
       <div className="nx-list-version" style={{ marginRight: '16px' }}>
@@ -184,6 +236,17 @@ export function APIListItem({ api }: APIListItemProps) {
               </button>
             )}
           </>
+        )}
+
+        {(api.status === APIStatus.EXPIRED || String(api.status).toUpperCase() === 'EXPIRED') && (
+          <button 
+            onClick={() => window.open(getSupportUrl(), '_blank', 'noopener,noreferrer')}
+            className="nx-btn nx-btn-primary"
+            style={{ backgroundColor: 'var(--nx-indigo-600)', color: 'var(--nx-white)', border: 'none' }}
+          >
+            <Icon name="history" size={16} />
+            Contact Support
+          </button>
         )}
 
         {api.settingsUrl && (

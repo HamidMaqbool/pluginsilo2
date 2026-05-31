@@ -10,6 +10,7 @@ export enum APIStatus {
   DOWNLOADING = 'DOWNLOADING',
   DOWNLOADED = 'DOWNLOADED',
   ACTIVE = 'ACTIVE',
+  EXPIRED = 'EXPIRED',
 }
 
 export interface SettingField {
@@ -58,6 +59,7 @@ export interface CompanyAPI {
   menuItems?: DropdownMenuItem[];
   settingsUrl?: string;
   documentationUrl?: string;
+  expire_at?: string;
 }
 
 export interface LogEntry {

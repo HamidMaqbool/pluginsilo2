@@ -20,8 +20,15 @@ export default function MarketplacePage() {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [ApiLoading, setApiLoading] = useState(true);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>(() => {
+    const saved = localStorage.getItem('silo_marketplace_view_mode');
+    return (saved === 'grid' || saved === 'list') ? saved : 'grid';
+  });
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('silo_marketplace_view_mode', viewMode);
+  }, [viewMode]);
   const [selectedPricingType, setSelectedPricingType] = useState<'All' | 'Free' | 'Paid'>('All');
 
   const allTags = Array.from(new Set(apis.flatMap(api => api.tags || [])));
