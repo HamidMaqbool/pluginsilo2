@@ -1,10 +1,35 @@
 // ajaxHelper.ts
 export function getSupportUrl(): string {
   const ajaxUrl = window.ps_ajax_url || 'https://plugins.jarld.com/wp-json/plugin-silo/v1/ajax';
-  if (ajaxUrl.includes('/ajax')) {
-    return ajaxUrl.replace('/ajax', '/support');
+  try {
+    const urlObj = new URL(ajaxUrl);
+    let base = urlObj.origin;
+    
+    // Remove common WordPress endpoints to find the base site URL
+    const wpJsonIdx = urlObj.pathname.indexOf('/wp-json');
+    const wpAdminIdx = urlObj.pathname.indexOf('/wp-admin');
+    
+    if (wpJsonIdx > -1) {
+      base += urlObj.pathname.substring(0, wpJsonIdx);
+    } else if (wpAdminIdx > -1) {
+      base += urlObj.pathname.substring(0, wpAdminIdx);
+    } else {
+      // Just strip the last component if we find '/ajax' or similar
+      const lastSlashIdx = urlObj.pathname.lastIndexOf('/');
+      if (lastSlashIdx > 0) {
+        base += urlObj.pathname.substring(0, lastSlashIdx);
+      }
+    }
+    
+    // Ensure base ends with a slash before adding query parameters
+    if (!base.endsWith('/')) {
+      base += '/';
+    }
+    
+    return `${base}?ps_support=true`;
+  } catch {
+    return 'https://plugins.jarld.com/?ps_support=true';
   }
-  return ajaxUrl.replace(/ajax$/, 'support');
 }
 
 export async function ajaxRequest({ data = {}, type = '' }) {

@@ -158,6 +158,25 @@ export default function MarketplacePage() {
         <div className={viewMode === 'grid' ? "nx-grid-layout" : "nx-list-layout"}>
           {ApiLoading && Loading()}
           <AnimatePresence mode="popLayout">
+            <motion.div
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className={viewMode === 'grid' ? "nx-api-card nx-request-card" : "nx-api-list-item nx-request-card"}
+              onClick={handleRequestCustom}
+              key="custom-request-card"
+            >
+              <div className="nx-request-content">
+                <div className="nx-request-icon">
+                  <Icon name="plus" size={32} />
+                </div>
+                <h3>Need something else?</h3>
+                <p>Request a custom plugin or API integration specifically for your needs.</p>
+                <button className="nx-btn nx-btn-primary">
+                  Request Custom
+                </button>
+              </div>
+            </motion.div>
             {filteredApis.map((api) => (
               viewMode === 'grid' ? (
                 <APICard
@@ -171,24 +190,6 @@ export default function MarketplacePage() {
                 />
               )
             ))}
-            <motion.div
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className={viewMode === 'grid' ? "nx-api-card nx-request-card" : "nx-api-list-item nx-request-card"}
-              onClick={handleRequestCustom}
-            >
-              <div className="nx-request-content">
-                <div className="nx-request-icon">
-                  <Icon name="plus" size={32} />
-                </div>
-                <h3>Need something else?</h3>
-                <p>Request a custom plugin or API integration specifically for your needs.</p>
-                <button className="nx-btn nx-btn-primary">
-                  Request Custom
-                </button>
-              </div>
-            </motion.div>
           </AnimatePresence>
         </div>
 
