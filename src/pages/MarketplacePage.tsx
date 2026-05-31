@@ -48,10 +48,10 @@ export default function MarketplacePage() {
   };
 
   const Loading = () => (
-    <>
+    <div key="loaders-wrapper" style={{ display: 'contents' }}>
       <ApiCardLoader />
       <ApiCardLoader />
-    </>
+    </div>
   );
 
   return (
@@ -156,7 +156,6 @@ export default function MarketplacePage() {
 
       <div className="nx-marketplace-body">
         <div className={viewMode === 'grid' ? "nx-grid-layout" : "nx-list-layout"}>
-          {ApiLoading && Loading()}
           <AnimatePresence mode="popLayout">
             <motion.div
               layout
@@ -177,6 +176,7 @@ export default function MarketplacePage() {
                 </button>
               </div>
             </motion.div>
+            {ApiLoading && Loading()}
             {filteredApis.map((api) => (
               viewMode === 'grid' ? (
                 <APICard
