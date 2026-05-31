@@ -2,7 +2,7 @@
 export function getSupportUrl(): string {
   const ajaxUrl = window.ps_ajax_url || 'https://plugins.jarld.com/wp-json/plugin-silo/v1/ajax';
   try {
-    const urlObj = new URL(ajaxUrl);
+    const urlObj = new URL(ajaxUrl, window.location.href);
     let base = urlObj.origin;
     
     // Remove common WordPress endpoints to find the base site URL
@@ -33,17 +33,7 @@ export function getSupportUrl(): string {
 }
 
 export async function ajaxRequest({ data = {}, type = '' }) {
-  // Use local backend proxy if cross-origin, otherwise use target directly
-  let url = window.ps_ajax_url || 'https://plugins.jarld.com/wp-json/plugin-silo/v1/ajax';
-
-  try {
-    const parsedUrl = new URL(url, window.location.href);
-    if (parsedUrl.origin !== window.location.origin) {
-      url = '/api/ajax';
-    }
-  } catch (e) {
-    // Fallback
-  }
+  const url = window.ps_ajax_url || 'https://plugins.jarld.com/wp-json/plugin-silo/v1/ajax';
 
   let formData;
   if (data instanceof FormData) {
