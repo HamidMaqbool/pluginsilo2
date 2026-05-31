@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { APIStatus } from './types';
 import { useCompanyAPIStore } from './config';
 import { useAppStore } from './store/appStore';
-import SupportPage from './pages/SupportPage';
 import MarketplacePage from './pages/MarketplacePage';
 import { Icon } from './components/Icon';
 import { SettingsModal } from './components/SettingsModal';
@@ -30,8 +29,6 @@ export default function App() {
   const setSelectedApiForQueue = useAppStore(state => state.setSelectedApiForQueue);
   const apiToDelete = useAppStore(state => state.apiToDelete);
   const setApiToDelete = useAppStore(state => state.setApiToDelete);
-  const supportTicketPreFill = useAppStore(state => state.supportTicketPreFill);
-  const setSupportTicketPreFill = useAppStore(state => state.setSupportTicketPreFill);
   const notifications = useAppStore(state => state.notifications);
   const dismissNotification = useAppStore(state => state.dismissNotification);
   const toasts = useAppStore(state => state.toasts);
@@ -136,17 +133,7 @@ export default function App() {
         </AnimatePresence>
 
         <AnimatePresence mode="wait">
-          {currentPage === 'marketplace' ? (
-            <MarketplacePage />
-          ) : (
-            <SupportPage
-              onBack={() => {
-                setCurrentPage('marketplace');
-                setSupportTicketPreFill(null);
-              }}
-              initialTicketData={supportTicketPreFill || undefined}
-            />
-          )}
+          <MarketplacePage />
         </AnimatePresence>
       </main>
 

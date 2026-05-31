@@ -8,6 +8,7 @@ import { GeneralSettings } from '../components/GeneralSettings';
 import { Icon } from '../components/Icon';
 import ApiCardLoader from '../components/ApiCardLoader';
 import { useAppStore } from '../store/appStore';
+import { getSupportUrl } from '../helpers/ajaxHelper';
 
 export default function MarketplacePage() {
   const apis = useCompanyAPIStore(state => state.apis);
@@ -15,9 +16,6 @@ export default function MarketplacePage() {
   const licenseKey = useAppStore(state => state.licenseKey);
   const showGeneralSettings = useAppStore(state => state.showGeneralSettings);
   const setShowGeneralSettings = useAppStore(state => state.setShowGeneralSettings);
-  const hasNewSupportResponse = useAppStore(state => state.hasNewSupportResponse);
-  const setHasNewSupportResponse = useAppStore(state => state.setHasNewSupportResponse);
-  const setSupportTicketPreFill = useAppStore(state => state.setSupportTicketPreFill);
   const setCurrentPage = useAppStore(state => state.setCurrentPage);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -42,18 +40,11 @@ export default function MarketplacePage() {
   }, [filteredApis]);
 
   const handleRequestCustom = () => {
-    setSupportTicketPreFill({
-      subject: 'Custom Plugin/API Request',
-      description: 'I am looking for a custom integration for: \n\n[Please describe the service or functionality you need]',
-      category: 'Custom Development'
-    });
-    setCurrentPage('support');
+    window.open(getSupportUrl(), '_blank', 'noopener,noreferrer');
   };
 
   const handleOpenSupport = () => {
-    setCurrentPage('support');
-    setHasNewSupportResponse(false);
-    setSupportTicketPreFill(null);
+    window.open(getSupportUrl(), '_blank', 'noopener,noreferrer');
   };
 
   const Loading = () => (
@@ -86,24 +77,7 @@ export default function MarketplacePage() {
                 className="nx-action-btn-top nx-support-btn nx-prominent"
                 title="Support Center"
               >
-                <div className="nx-icon-wrapper">
-                  <motion.div
-                    animate={hasNewSupportResponse ? {
-                      scale: [1, 1.15, 1],
-                    } : {}}
-                    transition={hasNewSupportResponse ? {
-                      duration: 1.5,
-                      repeat: Infinity,
-                    } : {}}
-                  >
-                    <Icon name="bell" size={18} />
-                  </motion.div>
-                  {hasNewSupportResponse && (
-                    <span className="nx-notification-badge">
-                      1
-                    </span>
-                  )}
-                </div>
+                <Icon name="bell" size={18} />
                 <span>Support</span>
               </button>
               <button

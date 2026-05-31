@@ -15,8 +15,6 @@ interface AppState {
   selectedApiForQueue: CompanyAPI | null;
   apiToDelete: CompanyAPI | null;
   showGeneralSettings: boolean;
-  supportTicketPreFill: { subject: string; description: string; category: string } | null;
-  hasNewSupportResponse: boolean;
   notifications: { id: string; message: string; type: 'warning' | 'info' }[];
   toasts: { id: string; message: string; type: 'warning' | 'info' | 'success'; title?: string }[];
   
@@ -29,8 +27,6 @@ interface AppState {
   setSelectedApiForQueue: (api: CompanyAPI | null) => void;
   setApiToDelete: (api: CompanyAPI | null) => void;
   setShowGeneralSettings: (show: boolean) => void;
-  setSupportTicketPreFill: (prefill: { subject: string; description: string; category: string } | null) => void;
-  setHasNewSupportResponse: (has: boolean) => void;
   dismissNotification: (id: string) => void;
   addNotification: (message: string, type?: 'warning' | 'info') => void;
   addToast: (message: string, type?: 'warning' | 'info' | 'success', title?: string) => void;
@@ -50,8 +46,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   selectedApiForQueue: null,
   apiToDelete: null,
   showGeneralSettings: false,
-  supportTicketPreFill: null,
-  hasNewSupportResponse: true,
   notifications: [
     { id: '1', message: 'System maintenance scheduled for Sunday at 02:00 AM UTC.', type: 'info' },
     { id: '2', message: 'Your Stripe Connect API key is expiring in 3 days.', type: 'warning' }
@@ -102,8 +96,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   setSelectedApiForQueue: (api) => set({ selectedApiForQueue: api }),
   setApiToDelete: (api) => set({ apiToDelete: api }),
   setShowGeneralSettings: (show) => set({ showGeneralSettings: show }),
-  setSupportTicketPreFill: (prefill) => set({ supportTicketPreFill: prefill }),
-  setHasNewSupportResponse: (has) => set({ hasNewSupportResponse: has }),
   dismissNotification: (id) => set((state) => ({
     notifications: state.notifications.filter((n) => n.id !== id)
   })),

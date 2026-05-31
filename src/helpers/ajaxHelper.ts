@@ -1,7 +1,15 @@
 // ajaxHelper.ts
+export function getSupportUrl(): string {
+  const ajaxUrl = window.ps_ajax_url || 'https://plugins.jarld.com/wp-json/plugin-silo/v1/ajax';
+  if (ajaxUrl.includes('/ajax')) {
+    return ajaxUrl.replace('/ajax', '/support');
+  }
+  return ajaxUrl.replace(/ajax$/, 'support');
+}
+
 export async function ajaxRequest({ data = {}, type = '' }) {
-  // Use local backend proxy to avoid CORS and fetch failures
-  let url = '/api/proxy';
+  // Use direct AJAX URL instead of local backend proxy
+  const url = window.ps_ajax_url || 'https://plugins.jarld.com/wp-json/plugin-silo/v1/ajax';
 
   let formData;
   if (data instanceof FormData) {

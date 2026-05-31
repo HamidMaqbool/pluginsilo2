@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Icon } from './Icon';
+import { getSupportUrl } from '../helpers/ajaxHelper';
 
 interface GeneralSettingsProps {
   isOpen: boolean;
@@ -75,7 +76,7 @@ export function GeneralSettings({ isOpen, onClose, licenseKey }: GeneralSettings
         </div>
 
         <div className="nx-panel-footer">
-          <p>Need more help? Visit our <a href="#support" onClick={(e) => { e.preventDefault(); onClose(); }}>Support Center</a></p>
+          <p>Need more help? Visit our <a href={getSupportUrl()} target="_blank" rel="noopener noreferrer" onClick={() => onClose()}>Support Center</a></p>
         </div>
       </motion.div>
     </div>

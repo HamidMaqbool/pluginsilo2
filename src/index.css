@@ -2547,6 +2547,43 @@
   flex-shrink: 0;
 }
 
+.nx-app-root .nx-close-btn,
+.nx-app-root .nx-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--nx-slate-400);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  outline: none;
+}
+
+.nx-app-root .nx-close-btn:hover,
+.nx-app-root .nx-icon-button:hover {
+  background-color: var(--nx-slate-100);
+  color: var(--nx-slate-700);
+  border-color: var(--nx-slate-200);
+  transform: scale(1.05);
+}
+
+.nx-app-root .nx-close-btn:active,
+.nx-app-root .nx-icon-button:active {
+  background-color: var(--nx-slate-200);
+  transform: scale(0.95);
+}
+
+.nx-app-root .nx-close-btn:focus-visible,
+.nx-app-root .nx-icon-button:focus-visible {
+  outline: 2px solid var(--nx-indigo-500);
+  outline-offset: 2px;
+}
+
 .nx-app-root .nx-modal-header-info {
   display: flex;
   align-items: center;
