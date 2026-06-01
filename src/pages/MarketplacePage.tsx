@@ -36,7 +36,8 @@ export default function MarketplacePage() {
     const matchesSearch = api.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       api.category.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesTag = !selectedTag || (api.tags && api.tags.includes(selectedTag));
-    const matchesPricing = selectedPricingType === 'All' || api.pricingType === selectedPricingType;
+    const matchesPricing = selectedPricingType === 'All' || 
+      (api.pricingType && String(api.pricingType).toLowerCase() === selectedPricingType.toLowerCase());
     return matchesSearch && matchesTag && matchesPricing;
   });
 
@@ -67,18 +68,9 @@ export default function MarketplacePage() {
         <div className="nx-page-title">
           <div className="nx-brand-row">
             <div className="nx-brand-left">
-              <Icon name="zap" size={28} className="nx-brand-logo" />
-              <h1>API Marketplace</h1>
+              <h1>PluginSilo Marketplace</h1>
             </div>
             <div className="nx-brand-actions">
-              <button
-                onClick={handleRequestCustom}
-                className="nx-action-btn-top nx-custom-request-btn"
-                title="Request Custom Integration"
-              >
-                <Icon name="plus" size={18} />
-                <span>Request Custom</span>
-              </button>
               <button
                 onClick={handleOpenSupport}
                 className="nx-action-btn-top nx-support-btn nx-prominent"
@@ -87,32 +79,38 @@ export default function MarketplacePage() {
                 <Icon name="bell" size={18} />
                 <span>Support</span>
               </button>
-              <button
-                onClick={() => setShowGeneralSettings(!showGeneralSettings)}
-                className={`nx-action-btn-top ${showGeneralSettings ? 'nx-active' : ''}`}
-                title="General Settings"
-              >
-                <Icon name="settings" size={18} />
-                <span>Settings</span>
-              </button>
             </div>
           </div>
-          <p>Discover and manage your enterprise integrations with ease.</p>
+          <p>Discover, install, and manage your premium WordPress plugins and enterprise extensions with ease.</p>
         </div>
 
-        <div className="nx-controls-row">
-          <div className="nx-search-container">
-            <Icon name="search" size={18} className="nx-search-icon" />
-            <input
-              type="text"
-              placeholder="Search APIs..."
-              className="nx-search-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+        <div className="nx-controls-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap', flex: '1 1 auto' }}>
+            <div className="nx-search-container" style={{ width: '300px', margin: 0 }}>
+              <Icon name="search" size={18} className="nx-search-icon" />
+              <input
+                type="text"
+                placeholder="Search plugins & addons..."
+                className="nx-search-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <div className="nx-secondary-filters" style={{ margin: 0 }}>
+              {(['All', 'Free', 'Paid'] as const).map(type => (
+                <button
+                  key={type}
+                  onClick={() => setSelectedPricingType(type)}
+                  className={`nx-filter-btn ${selectedPricingType === type ? 'nx-active' : ''}`}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="nx-view-controls">
+          <div className="nx-view-controls" style={{ margin: 0 }}>
             <button
               onClick={() => setViewMode('grid')}
               className={`nx-view-button ${viewMode === 'grid' ? 'nx-active' : ''}`}
@@ -130,12 +128,12 @@ export default function MarketplacePage() {
           </div>
         </div>
 
-        <div className="nx-tags-filter">
+        <div className="nx-tags-filter" style={{ marginTop: '4px', width: '100%' }}>
           <button
             onClick={() => setSelectedTag(null)}
             className={`nx-tag-pill ${selectedTag === null ? 'nx-active' : ''}`}
           >
-            All
+            All Plugins
           </button>
           {allTags.map(tag => (
             <button
@@ -144,18 +142,6 @@ export default function MarketplacePage() {
               className={`nx-tag-pill ${selectedTag === tag ? 'nx-active' : ''}`}
             >
               {tag}
-            </button>
-          ))}
-        </div>
-
-        <div className="nx-secondary-filters">
-          {(['All', 'Free', 'Paid'] as const).map(type => (
-            <button
-              key={type}
-              onClick={() => setSelectedPricingType(type)}
-              className={`nx-filter-btn ${selectedPricingType === type ? 'nx-active' : ''}`}
-            >
-              {type}
             </button>
           ))}
         </div>
@@ -209,6 +195,34 @@ export default function MarketplacePage() {
             />
           )}
         </AnimatePresence>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', marginTop: '48px', paddingBottom: '24px' }}>
+        <div className="nx-license-key-badge" style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          backgroundColor: 'var(--nx-slate-50)',
+          border: '1px solid var(--nx-slate-200)',
+          borderRadius: '20px',
+          padding: '6px 14px',
+          fontSize: '11px',
+          fontWeight: 500,
+          color: 'var(--nx-slate-600)',
+          fontFamily: 'var(--font-mono)',
+          boxShadow: 'var(--nx-shadow-sm)',
+        }}>
+          <span style={{
+            display: 'inline-block',
+            width: '6px',
+            height: '6px',
+            backgroundColor: 'var(--nx-emerald-500)',
+            borderRadius: '50%',
+            boxShadow: '0 0 0 2px var(--nx-emerald-100)'
+          }}></span>
+          <span style={{ color: 'var(--nx-slate-400)', marginRight: '4px' }}>LICENSE KEY:</span>
+          <span id="licenseKey">{licenseKey || 'PLST-CONN-ACTIVE-2026'}</span>
+        </div>
       </div>
     </div>
   );

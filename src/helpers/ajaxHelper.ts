@@ -84,6 +84,15 @@ export async function ajaxRequest({ data = {}, type = '' }) {
   }
 }
 
+function cleanJsonString(str: string): string {
+  // Strip comments and trailing commas safely
+  return str.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)|(,\s*(?=[\]}]))/g, (m, g1, g2) => {
+    if (g1) return ""; // is comment
+    if (g2) return ""; // is trailing comma
+    return m; // is string literal
+  });
+}
+
 function extractJSON(str: string) {
   const trimmed = str.trim();
   
@@ -105,6 +114,7 @@ function extractJSON(str: string) {
   }
   
   let candidate = trimmed.substring(startIdx);
+  candidate = cleanJsonString(candidate);
   
   // Try up to 10 iterations of error-position truncation
   for (let attempt = 0; attempt < 10; attempt++) {

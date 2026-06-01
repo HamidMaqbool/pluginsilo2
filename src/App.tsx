@@ -8,6 +8,7 @@ import { Icon } from './components/Icon';
 import { SettingsModal } from './components/SettingsModal';
 import { DeleteConfirmationModal } from './components/DeleteConfirmationModal';
 import { LicenseGate } from './components/LicenseGate';
+import { getSupportUrl } from './helpers/ajaxHelper';
 
 export default function App() {
   const fetchCompanyAPIs = useCompanyAPIStore(state => state.fetchCompanyAPIs);
@@ -29,10 +30,15 @@ export default function App() {
   const setSelectedApiForQueue = useAppStore(state => state.setSelectedApiForQueue);
   const apiToDelete = useAppStore(state => state.apiToDelete);
   const setApiToDelete = useAppStore(state => state.setApiToDelete);
-  const notifications = useAppStore(state => state.notifications);
+  const notifications = useAppStore(state => state.notifications) || [];
   const dismissNotification = useAppStore(state => state.dismissNotification);
   const toasts = useAppStore(state => state.toasts);
   const dismissToast = useAppStore(state => state.dismissToast);
+
+  const safeNotifications = Array.isArray(notifications) ? notifications : [];
+  const inlineNotifications = safeNotifications.filter(n => n && n.type !== 'alert');
+  const alertNotifications = safeNotifications.filter(n => n && n.type === 'alert');
+  const currentAlert = alertNotifications[0];
 
   useEffect(() => {
     fetchCompanyAPIs();
@@ -110,24 +116,30 @@ export default function App() {
 
       <main className="nx-main-content">
         <AnimatePresence>
-          {notifications.length > 0 && currentPage === 'marketplace' && (
+          {inlineNotifications.length > 0 && currentPage === 'marketplace' && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               className="nx-notifications-container"
             >
-              {notifications.map(n => (
-                <div key={n.id} className={`nx-notification-banner nx-notification-${n.type}`}>
-                  <div className="nx-notification-content">
-                    <Icon name={n.type === 'warning' ? 'shield' : 'bell'} size={16} />
-                    <span>{n.message}</span>
+              {inlineNotifications.map(n => {
+                const iconName = n.type === 'success' ? 'check' : (n.type === 'error' || n.type === 'warning' ? 'shield' : 'bell');
+                const isPermanent = n.id && n.id.toLowerCase().includes('permanent');
+                return (
+                  <div key={n.id} className={`nx-notification-banner nx-notification-${n.type}`}>
+                    <div className="nx-notification-content">
+                      <Icon name={iconName} size={16} />
+                      <span>{n.message}</span>
+                    </div>
+                    {!isPermanent && (
+                      <button onClick={() => dismissNotification(n.id)} className="nx-notification-close">
+                        <Icon name="x" size={14} />
+                      </button>
+                    )}
                   </div>
-                  <button onClick={() => dismissNotification(n.id)} className="nx-notification-close">
-                    <Icon name="x" size={14} />
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </motion.div>
           )}
         </AnimatePresence>
@@ -151,6 +163,51 @@ export default function App() {
             onClose={() => setApiToDelete(null)}
             onConfirm={(removeAllData) => handleUninstall(apiToDelete.id, removeAllData)}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Dynamic Alert Notification Modal */}
+      <AnimatePresence>
+        {currentAlert && (
+          <div className="nx-modal-overlay" style={{ zIndex: 200 }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="nx-alert-modal-container"
+            >
+              <div className="nx-alert-modal-header">
+                <div className="nx-alert-icon-ring" style={{ backgroundColor: 'var(--nx-indigo-50)', color: 'var(--nx-indigo-600)', borderColor: 'var(--nx-indigo-100)' }}>
+                  <Icon name="bell" size={28} />
+                </div>
+                <h3>Action Required</h3>
+              </div>
+              <div className="nx-alert-modal-body">
+                {currentAlert.message}
+              </div>
+              <div className="nx-alert-modal-footer">
+                <button
+                  onClick={() => {
+                    window.open(getSupportUrl(), '_blank', 'noopener,noreferrer');
+                  }}
+                  className="nx-btn-alert-support"
+                >
+                  <Icon name="bell" size={16} />
+                  <span>Contact Support</span>
+                </button>
+                {!(currentAlert.id && currentAlert.id.toLowerCase().includes('permanent')) && (
+                  <button
+                    onClick={() => {
+                      dismissNotification(currentAlert.id);
+                    }}
+                    className="nx-btn-alert-cancel"
+                  >
+                    <span>Close</span>
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

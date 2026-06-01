@@ -73,7 +73,10 @@ export function isFutureDate(dateStr: string | undefined | null): boolean {
   return date.getTime() > Date.now();
 }
 
-export function formatPrice(price: string | number | undefined | null): string {
+export function formatPrice(price: string | number | undefined | null, pricingType?: string): string {
+  if (pricingType && String(pricingType).toLowerCase() === 'free') {
+    return 'Free';
+  }
   if (price === undefined || price === null) return 'Free';
   const priceStr = String(price).trim();
   if (priceStr.toLowerCase() === 'free' || priceStr === '0' || priceStr === '') {

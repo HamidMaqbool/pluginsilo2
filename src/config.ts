@@ -65,6 +65,22 @@ export function parseApis(rawApis: any): CompanyAPI[] {
       });
     }
 
+    const rawPricingType = apiDef.pricingType || apiDef.typ || apiDef.type || savedState.pricingType || savedState.typ || savedState.type;
+    let pricingType: 'Free' | 'Paid' = 'Free';
+    if (rawPricingType) {
+      const lower = String(rawPricingType).toLowerCase();
+      if (lower === 'paid') {
+        pricingType = 'Paid';
+      } else {
+        pricingType = 'Free';
+      }
+    } else {
+      const priceVal = parseFloat(apiDef.price || '0');
+      if (priceVal > 0) {
+        pricingType = 'Paid';
+      }
+    }
+
     list.push({
       ...apiDef,
       settingsConfig: updatedSettingsConfig,
@@ -74,7 +90,8 @@ export function parseApis(rawApis: any): CompanyAPI[] {
       menuItems: Array.isArray(menuItems) ? menuItems : undefined,
       settingsUrl: settingsUrl,
       documentationUrl: documentationUrl,
-      ...savedState
+      ...savedState,
+      pricingType
     });
   });
 

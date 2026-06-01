@@ -99,7 +99,7 @@ export function APIListItem({ api }: APIListItemProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
             <span className="nx-category-tag" style={{ margin: 0 }}>{api.category}</span>
             <span className="nx-category-tag" style={{ backgroundColor: 'var(--nx-indigo-50)', color: 'var(--nx-indigo-600)', borderColor: 'var(--nx-indigo-100)', margin: 0 }}>
-              {formatPrice(api.price)}
+              {formatPrice(api.price, api.pricingType)}
             </span>
             {api.hasFreeTrial && (
               <span className="nx-category-tag" style={{ backgroundColor: 'var(--nx-emerald-50)', color: 'var(--nx-emerald-700)', borderColor: 'var(--nx-emerald-100)', margin: 0 }}>
@@ -140,7 +140,7 @@ export function APIListItem({ api }: APIListItemProps) {
             </div>
           )}
 
-          {api.expire_at && (
+          {api.expire_at && api.pricingType !== 'Free' && (
             <span className="nx-category-tag" style={{ 
               backgroundColor: isFutureDate(api.expire_at) ? 'var(--nx-emerald-50)' : 'var(--nx-red-50)', 
               color: isFutureDate(api.expire_at) ? 'var(--nx-emerald-700)' : 'var(--nx-red-700)', 
@@ -249,7 +249,7 @@ export function APIListItem({ api }: APIListItemProps) {
           </button>
         )}
 
-        {api.settingsUrl && (
+        {api.settingsUrl && api.status === APIStatus.ACTIVE && (
           <button 
             onClick={() => window.open(api.settingsUrl, '_blank')} 
             className="nx-more-button" 
@@ -259,7 +259,7 @@ export function APIListItem({ api }: APIListItemProps) {
           </button>
         )}
 
-        {api.documentationUrl && (
+        {api.documentationUrl && api.status === APIStatus.ACTIVE && (
           <button 
             onClick={() => window.open(api.documentationUrl, '_blank')} 
             className="nx-more-button" 

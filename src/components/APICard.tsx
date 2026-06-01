@@ -91,7 +91,7 @@ export function APICard({ api }: APICardProps) {
               <span key={tag} className="nx-tag-micro">{tag}</span>
             ))}
           </div>
-          {(api.settingsUrl || api.documentationUrl) && (
+          {(api.settingsUrl || api.documentationUrl) && api.status === APIStatus.ACTIVE && (
             <div className="nx-overlay-actions">
               {api.settingsUrl && (
                 <button 
@@ -115,7 +115,7 @@ export function APICard({ api }: APICardProps) {
           )}
         </div>
         <div className="nx-pricing-badge">
-          {formatPrice(api.price)}
+          {formatPrice(api.price, api.pricingType)}
         </div>
         {api.hasFreeTrial && (
           <div className="nx-trial-badge">
@@ -140,7 +140,7 @@ export function APICard({ api }: APICardProps) {
           <span className="nx-category-tag">{api.category}</span>
         </div>
         <p>{api.description}</p>
-        {api.expire_at && (
+        {api.expire_at && api.pricingType !== 'Free' && (
           <div className="nx-expiry-label" style={{ 
             display: 'flex', 
             alignItems: 'center', 

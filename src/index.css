@@ -29,7 +29,8 @@
   --nx-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--nx-bg-color);
+  background-color: transparent;
+  padding-top: 10px;
   color: var(--nx-slate-900);
   line-height: 1.5;
   min-height: 100vh;
@@ -358,7 +359,7 @@
 .nx-app-root .nx-marketplace-body {
   display: flex;
   gap: 24px;
-  padding: 0 40px 40px;
+  padding: 0 0 40px 0;
   position: relative;
 }
 
@@ -1542,15 +1543,14 @@
 .nx-app-root .nx-page-header {
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  margin-bottom: 48px;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 @media (min-width: 1024px) {
   .nx-app-root .nx-page-header {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
@@ -1683,11 +1683,13 @@
 
 /* Wide System Banner Notifications */
 .nx-app-root .nx-notifications-container {
-  padding: 0 40px;
-  margin-bottom: 24px;
+  max-width: 1280px;
+  margin: 0 auto 24px auto;
+  padding: 0 32px;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
 }
 
 .nx-app-root .nx-notification-banner {
@@ -1905,6 +1907,27 @@
 
 .nx-app-root .nx-action-btn-top.nx-prominent .nx-unread-dot {
   border-color: var(--nx-indigo-600);
+}
+
+/* Bell ring/sway animation for support button */
+@keyframes nx-bell-ring {
+  0%, 100% { transform: rotate(0); }
+  4% { transform: rotate(15deg); }
+  8% { transform: rotate(-12deg); }
+  12% { transform: rotate(10deg); }
+  16% { transform: rotate(-8deg); }
+  20% { transform: rotate(5deg); }
+  24% { transform: rotate(-3deg); }
+  28% { transform: rotate(0); }
+}
+
+.nx-app-root .nx-support-btn svg {
+  animation: nx-bell-ring 4s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+.nx-app-root .nx-support-btn:hover svg {
+  animation: nx-bell-ring 0.8s ease-in-out infinite;
 }
 
 /* Tags Filter */
@@ -3035,16 +3058,14 @@
 .nx-app-root .nx-page-header {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   margin-bottom: 32px;
 }
 
 @media (min-width: 1022px) {
   .nx-app-root .nx-page-header {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
     gap: 24px;
   }
 }
@@ -3110,13 +3131,13 @@
 .nx-app-root .nx-marketplace-body {
   display: flex;
   gap: 20px;
-  padding: 0 32px 40px;
+  padding: 0 0 40px 0;
   position: relative;
 }
 
 @media (max-width: 1100px) {
   .nx-app-root .nx-marketplace-body {
-    padding: 0 24px 40px;
+    padding: 0 0 40px 0;
     gap: 16px;
   }
 }
@@ -3514,4 +3535,123 @@
     transform: scale(1.05);
     box-shadow: 0 0 0 12px rgba(99, 102, 241, 0);
   }
+}
+
+/* Custom Notification Banner Colors */
+.nx-app-root .nx-notification-success {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #d1fae5;
+}
+
+.nx-app-root .nx-notification-error {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fee2e2;
+}
+
+/* Custom Alert Modal styles */
+.nx-app-root .nx-alert-modal-container {
+  background-color: var(--nx-white);
+  width: 100%;
+  max-width: 440px;
+  border-radius: 24px;
+  box-shadow: var(--nx-shadow-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.nx-app-root .nx-alert-modal-header {
+  padding: 28px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.nx-app-root .nx-alert-icon-ring {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #fef2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+}
+
+.nx-app-root .nx-alert-modal-header h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--nx-slate-900);
+}
+
+.nx-app-root .nx-alert-modal-body {
+  padding: 0 24px 24px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--nx-slate-600);
+  line-height: 1.5;
+}
+
+.nx-app-root .nx-alert-modal-footer {
+  padding: 16px 24px 24px;
+  background-color: var(--nx-slate-50);
+  border-top: 1px solid var(--nx-slate-100);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nx-app-root .nx-btn-alert-support {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 44px;
+  background-color: var(--nx-indigo-600);
+  color: var(--nx-white);
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.nx-app-root .nx-btn-alert-support:hover {
+  background-color: var(--nx-indigo-700);
+}
+
+.nx-app-root .nx-btn-alert-support:active {
+  transform: scale(0.98);
+}
+
+.nx-app-root .nx-btn-alert-cancel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  background-color: var(--nx-white);
+  color: var(--nx-slate-600);
+  border: 1px solid var(--nx-slate-200);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.nx-app-root .nx-btn-alert-cancel:hover {
+  background-color: var(--nx-slate-100);
+  border-color: var(--nx-slate-300);
+}
+
+.nx-app-root .nx-btn-alert-cancel:active {
+  transform: scale(0.98);
 }
